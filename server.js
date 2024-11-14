@@ -69,6 +69,24 @@ io.on('connection', (socket) => {
         }
     });
 
+    // 处理提交答案
+    socket.on('submitAnswer', ({ room, answer }) => {
+        const roomData = rooms[room];
+        if (roomData && roomData.gameStarted) {
+            const currentPlayer = roomData.playerOrder[roomData.currentTurn];
+            if (currentPlayer.id === socket.id) {
+                io.to(room).emit('newAnswer', { username: currentPlayer.username, answer });
+
+                // 继续到下一个玩家
+                roomData.currentTurn = (roomData.currentTurn + 1) % roomData.playerOrder.length;
+                io.to(room).emit('gameStarted', { playerOrder: roomData.playerOrder, currentTurn: roomData.currentTurn });
+
+                // 广播房间列表
+                io.emit('roomList', Object.keys(rooms));
+            }
+        }
+    });
+
     // 断开连接
     socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
@@ -89,6 +107,11 @@ io.on('connection', (socket) => {
                 io.emit('roomList', Object.keys(rooms)); // 更新房间列表
             }
         }
+    });
+
+    // 处理获取房间列表事件
+    socket.on('getRooms', () => {
+        socket.emit('roomList', Object.keys(rooms));
     });
 });
 

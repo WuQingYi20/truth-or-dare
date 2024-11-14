@@ -16,10 +16,49 @@ const resultText = document.getElementById('resultText');
 const historyList = document.getElementById('historyList');
 const availableRoomsList = document.getElementById('availableRooms');
 
+const responseSection = document.getElementById('responseSection');
+const textResponse = document.getElementById('textResponse');
+const sendTextBtn = document.getElementById('sendTextBtn');
+const startVoiceBtn = document.getElementById('startVoiceBtn');
+const stopVoiceBtn = document.getElementById('stopVoiceBtn');
+const responsesList = document.getElementById('responsesList');
+
 let currentRoom = '';
 let username = '';
 let playerOrder = [];
 let currentTurn = 0;
+
+// Speech Recognition Setup
+let recognition;
+let isListening = false;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        textResponse.value = transcript;
+        sendVoiceResponse(transcript);
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        alert('Voice recognition error. Please try again.');
+        stopVoice();
+    };
+
+    recognition.onend = () => {
+        if (isListening) {
+            stopVoice();
+        }
+    };
+} else {
+    alert('Your browser does not support Speech Recognition. Voice responses will not be available.');
+}
 
 // Join room
 joinBtn.addEventListener('click', () => {
@@ -71,9 +110,11 @@ function updateTurnDisplay() {
     if (currentPlayer.id === socket.id) {
         truthBtn.disabled = false;
         dareBtn.disabled = false;
+        responseSection.style.display = 'block';
     } else {
         truthBtn.disabled = true;
         dareBtn.disabled = true;
+        responseSection.style.display = 'none';
     }
 }
 
@@ -82,6 +123,7 @@ truthBtn.addEventListener('click', () => {
     socket.emit('chooseAction', { room: currentRoom, action: 'truth' });
     truthBtn.disabled = true;
     dareBtn.disabled = true;
+    responseSection.style.display = 'none';
 });
 
 // Choose dare
@@ -89,7 +131,51 @@ dareBtn.addEventListener('click', () => {
     socket.emit('chooseAction', { room: currentRoom, action: 'dare' });
     truthBtn.disabled = true;
     dareBtn.disabled = true;
+    responseSection.style.display = 'none';
 });
+
+// Send Text Response
+sendTextBtn.addEventListener('click', () => {
+    const answer = textResponse.value.trim();
+    if (answer) {
+        socket.emit('submitAnswer', { room: currentRoom, answer });
+        // Clear the text area after sending
+        textResponse.value = '';
+    } else {
+        alert('Please enter your answer before sending.');
+    }
+});
+
+// Start Voice Response
+startVoiceBtn.addEventListener('click', () => {
+    if (recognition && !isListening) {
+        recognition.start();
+        isListening = true;
+        startVoiceBtn.disabled = true;
+        stopVoiceBtn.disabled = false;
+        console.log('Voice recognition started.');
+    }
+});
+
+// Stop Voice Response
+stopVoiceBtn.addEventListener('click', () => {
+    stopVoice();
+});
+
+function stopVoice() {
+    if (recognition && isListening) {
+        recognition.stop();
+        isListening = false;
+        startVoiceBtn.disabled = false;
+        stopVoiceBtn.disabled = true;
+        console.log('Voice recognition stopped.');
+    }
+}
+
+// Handle voice response result
+function sendVoiceResponse(transcript) {
+    socket.emit('submitAnswer', { room: currentRoom, answer: transcript });
+}
 
 // Receive action result
 socket.on('actionResult', ({ action, selected, username }) => {
@@ -100,6 +186,13 @@ socket.on('actionResult', ({ action, selected, username }) => {
     // Update turn
     currentTurn = (currentTurn + 1) % playerOrder.length;
     updateTurnDisplay();
+});
+
+// Receive new answer
+socket.on('newAnswer', ({ username, answer }) => {
+    const li = document.createElement('li');
+    li.textContent = `${username}: ${answer}`;
+    responsesList.appendChild(li);
 });
 
 // Receive room list and display available rooms

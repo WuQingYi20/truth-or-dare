@@ -74,3 +74,29 @@ button {
     padding: 5px 10px;
     cursor: pointer;
 }
+
+/* Styles for Response Section */
+#responseSection {
+    margin-top: 20px;
+}
+
+#responseSection textarea {
+    width: 300px;
+    height: 100px;
+    padding: 10px;
+    resize: none;
+}
+
+#responsesList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#responsesList li {
+    background-color: #e0e0e0;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: left;
+}
