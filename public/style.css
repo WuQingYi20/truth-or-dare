@@ -58,3 +58,19 @@ button {
     padding: 10px;
     border-radius: 5px;
 }
+
+/* Styles for Available Rooms */
+#availableRooms {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#availableRooms li {
+    margin: 5px 0;
+}
+
+#availableRooms button {
+    padding: 5px 10px;
+    cursor: pointer;
+}

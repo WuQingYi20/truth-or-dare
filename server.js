@@ -29,6 +29,9 @@ io.on('connection', (socket) => {
         rooms[room].users.push({ id: socket.id, username });
         io.to(room).emit('updateUsers', rooms[room].users);
         console.log(`${username} joined room: ${room}`);
+
+        // 广播房间列表
+        io.emit('roomList', Object.keys(rooms));
     });
 
     // 开始游戏
@@ -59,6 +62,9 @@ io.on('connection', (socket) => {
                 
                 // 更新 currentTurn 以轮到下一个玩家
                 roomData.currentTurn = (roomData.currentTurn + 1) % roomData.playerOrder.length;
+
+                // 广播房间列表
+                io.emit('roomList', Object.keys(rooms));
             }
         }
     });
@@ -80,6 +86,7 @@ io.on('connection', (socket) => {
             io.to(room).emit('updateUsers', roomData.users);
             if (roomData.users.length === 0) {
                 delete rooms[room];
+                io.emit('roomList', Object.keys(rooms)); // 更新房间列表
             }
         }
     });

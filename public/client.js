@@ -14,6 +14,7 @@ const truthBtn = document.getElementById('truthBtn');
 const dareBtn = document.getElementById('dareBtn');
 const resultText = document.getElementById('resultText');
 const historyList = document.getElementById('historyList');
+const availableRoomsList = document.getElementById('availableRooms');
 
 let currentRoom = '';
 let username = '';
@@ -100,3 +101,43 @@ socket.on('actionResult', ({ action, selected, username }) => {
     currentTurn = (currentTurn + 1) % playerOrder.length;
     updateTurnDisplay();
 });
+
+// Receive room list and display available rooms
+socket.on('roomList', (rooms) => {
+    availableRoomsList.innerHTML = '';
+    if (rooms.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No available rooms.';
+        availableRoomsList.appendChild(li);
+    } else {
+        rooms.forEach(room => {
+            const li = document.createElement('li');
+            const joinRoomBtn = document.createElement('button');
+            joinRoomBtn.textContent = room;
+            joinRoomBtn.addEventListener('click', () => {
+                const enteredUsername = usernameInput.value.trim();
+                if (!enteredUsername) {
+                    alert('Please enter your name before joining a room.');
+                    return;
+                }
+                socket.emit('joinRoom', { room, username: enteredUsername });
+                currentRoom = room;
+                loginDiv.style.display = 'none';
+                gameDiv.style.display = 'block';
+                roomNameSpan.textContent = currentRoom;
+            });
+            li.appendChild(joinRoomBtn);
+            availableRoomsList.appendChild(li);
+        });
+    }
+});
+
+// Request the list of rooms when the page loads
+window.addEventListener('load', () => {
+    socket.emit('getRooms');
+});
+
+// Optionally, you can periodically request the room list to keep it updated
+setInterval(() => {
+    socket.emit('getRooms');
+}, 5000);
