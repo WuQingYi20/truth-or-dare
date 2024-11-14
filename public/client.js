@@ -23,6 +23,11 @@ const startVoiceBtn = document.getElementById('startVoiceBtn');
 const stopVoiceBtn = document.getElementById('stopVoiceBtn');
 const responsesList = document.getElementById('responsesList');
 
+const approvalSection = document.getElementById('approvalSection');
+const approvalText = document.getElementById('approvalText');
+const approveBtn = document.getElementById('approveBtn');
+const passBtn = document.getElementById('passBtn');
+
 let currentRoom = '';
 let username = '';
 let playerOrder = [];
@@ -83,7 +88,7 @@ socket.on('updateUsers', (users) => {
         userList.appendChild(li);
     });
 
-    // If the current user is the room creator, show the "Start Game" button
+    // 如果当前用户是房间创建者，显示“开始游戏”按钮
     const isRoomCreator = users[0].id === socket.id;
     startGameBtn.style.display = isRoomCreator ? 'block' : 'none';
 });
@@ -97,16 +102,16 @@ startGameBtn.addEventListener('click', () => {
 socket.on('gameStarted', (data) => {
     playerOrder = data.playerOrder;
     currentTurn = data.currentTurn;
-    gameInfo.style.display = 'block';
-    startGameBtn.style.display = 'none';
     updateTurnDisplay();
+    gameInfo.style.display = 'block';
+    responseSection.style.display = 'block';
 });
 
-// Update current player display
+// Update current turn display
 function updateTurnDisplay() {
     const currentPlayer = playerOrder[currentTurn];
     currentPlayerSpan.textContent = currentPlayer.username;
-
+    // 允许当前玩家选择真心话或大冒险
     if (currentPlayer.id === socket.id) {
         truthBtn.disabled = false;
         dareBtn.disabled = false;
@@ -123,7 +128,6 @@ truthBtn.addEventListener('click', () => {
     socket.emit('chooseAction', { room: currentRoom, action: 'truth' });
     truthBtn.disabled = true;
     dareBtn.disabled = true;
-    responseSection.style.display = 'none';
 });
 
 // Choose dare
@@ -131,7 +135,6 @@ dareBtn.addEventListener('click', () => {
     socket.emit('chooseAction', { room: currentRoom, action: 'dare' });
     truthBtn.disabled = true;
     dareBtn.disabled = true;
-    responseSection.style.display = 'none';
 });
 
 // Send Text Response
@@ -139,7 +142,7 @@ sendTextBtn.addEventListener('click', () => {
     const answer = textResponse.value.trim();
     if (answer) {
         socket.emit('submitAnswer', { room: currentRoom, answer });
-        // Clear the text area after sending
+        // 清空文本区域
         textResponse.value = '';
     } else {
         alert('Please enter your answer before sending.');
@@ -183,9 +186,28 @@ socket.on('actionResult', ({ action, selected, username }) => {
     const li = document.createElement('li');
     li.textContent = `${username} chose ${action === 'truth' ? 'Truth' : 'Dare'}: ${selected}`;
     historyList.appendChild(li);
-    // Update turn
-    currentTurn = (currentTurn + 1) % playerOrder.length;
-    updateTurnDisplay();
+    // 显示审批部分
+    displayApprovalSection(action, selected, username);
+});
+
+// Display approval section
+function displayApprovalSection(action, selected, responder) {
+    approvalSection.style.display = 'block';
+    approvalText.textContent = `${responder} 的 ${action === 'truth' ? '真心话' : '大冒险'}: ${selected}`;
+}
+
+// Approve Answer
+approveBtn.addEventListener('click', () => {
+    socket.emit('approveAnswer', { room: currentRoom, approval: true });
+    approvalSection.style.display = 'none';
+    alert('You have approved the answer.');
+});
+
+// Pass Answer
+passBtn.addEventListener('click', () => {
+    socket.emit('approveAnswer', { room: currentRoom, approval: false });
+    approvalSection.style.display = 'none';
+    alert('You have passed on the answer.');
 });
 
 // Receive new answer
@@ -193,6 +215,15 @@ socket.on('newAnswer', ({ username, answer }) => {
     const li = document.createElement('li');
     li.textContent = `${username}: ${answer}`;
     responsesList.appendChild(li);
+});
+
+// Receive next turn event
+socket.on('nextTurn', ({ currentTurn: newTurn }) => {
+    currentTurn = newTurn;
+    updateTurnDisplay();
+    responseSection.style.display = 'block';
+    responsesList.innerHTML = '';
+    approvalSection.style.display = 'none';
 });
 
 // Receive room list and display available rooms

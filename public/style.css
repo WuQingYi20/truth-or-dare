@@ -100,3 +100,21 @@ button {
     border-radius: 4px;
     text-align: left;
 }
+
+/* Styles for Approval Section */
+#approvalSection {
+    margin-top: 20px;
+    background-color: #dff0d8;
+    padding: 15px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+#approvalSection h3 {
+    margin-bottom: 10px;
+}
+
+#approvalSection button {
+    padding: 8px 16px;
+    margin: 0 10px;
+}
