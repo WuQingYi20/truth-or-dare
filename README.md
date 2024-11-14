@@ -2,6 +2,8 @@
 
 欢迎来到 **真心话大冒险大乱斗**，让你笑破肚皮、尴尬到爆表的终极线上多人游戏！无论你是在深夜和朋友们线上狂欢，还是在办公室偷偷解闷，这款游戏都能让你的每一秒都充满欢笑与惊喜！
 
+📢 **游戏地址**：[https://truth-or-dare-cg78.onrender.com](https://truth-or-dare-cg78.onrender.com)
+
 ## 游戏特色 🎮
 
 - **奇葩挑战无限**：从“在公共场所大声唱一首搞笑的歌”到“用表情符号写一个傻瓜故事”，各种奇葩任务等你来完成！
@@ -61,9 +63,5 @@
 ---
 
 **免责声明**：本游戏旨在带来欢乐，切勿用于恶意用途。请在游戏过程中尊重他人，避免不适当的内容。毕竟，我们都是来开心的，不是来制造尴尬的！
-
-快来加入我们的**真心话大冒险大乱斗**，让每一次线上聚会都充满欢笑与惊喜吧！😄🎉
-
-📢 **游戏地址**：[https://truth-or-dare-cg78.onrender.com](https://truth-or-dare-cg78.onrender.com)
 
 🐱‍💻 **仓库地址**：[https://github.com/WuQingYi20/truth-or-dare](https://github.com/WuQingYi20/truth-or-dare)
