@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth or Dare</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login">
+        <h1>Truth or Dare</h1>
+        <input type="text" id="username" placeholder="Enter your name" />
+        <input type="text" id="room" placeholder="Room number" />
+        <button id="joinBtn">Join Room</button>
+    </div>
+
+    <div id="game" style="display: none;">
+        <h2>Room: <span id="roomName"></span></h2>
+        <div id="users">
+            <h3>Player List:</h3>
+            <ul id="userList"></ul>
+        </div>
+        <button id="startGameBtn" style="display: none;">Start Game</button>
+        <div id="gameInfo" style="display: none;">
+            <h3>Current Turn: <span id="currentPlayer"></span></h3>
+            <div id="actions">
+                <button id="truthBtn" disabled>Truth</button>
+                <button id="dareBtn" disabled>Dare</button>
+            </div>
+            <div id="result">
+                <h3 id="resultText"></h3>
+            </div>
+            <div id="actionHistory">
+                <h3>Action History:</h3>
+                <ul id="historyList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+#login, #game {
+    margin-top: 50px;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 200px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+#users {
+    margin: 20px 0;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* 新增样式 */
+#startGameBtn {
+    padding: 10px 20px;
+    margin: 20px;
+    cursor: pointer;
+}
+
+#gameInfo {
+    margin-top: 20px;
+}
+
+#actionHistory {
+    margin-top: 20px;
+    text-align: left;
+    display: inline-block;
+}
+
+#actionHistory ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#actionHistory li {
+    background-color: #ffffff;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
