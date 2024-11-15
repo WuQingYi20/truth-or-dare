@@ -232,6 +232,7 @@ socket.on('newAnswer', ({ username, answer }) => {
     const li = document.createElement('li');
     li.textContent = `${username}: ${answer}`;
     responsesList.appendChild(li);
+    scrollToBottom();
 });
 
 // Receive next turn event
@@ -490,3 +491,10 @@ socket.on('approveAnswer', ({ room, approval }) => {
         }
     }
 });
+
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+    });
+}
