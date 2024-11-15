@@ -1,57 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truth or Dare</title>
+    <title>真心话大冒险</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="login">
-        <h1>Truth or Dare</h1>
-        <input type="text" id="username" placeholder="Enter your name" />
-        <input type="text" id="room" placeholder="Room number" />
-        <button id="joinBtn">Join Room</button>
-        <h3>Or Join an Existing Room:</h3>
+        <h1>真心话大冒险</h1>
+        <input type="text" id="username" placeholder="输入你的名字" />
+        <input type="text" id="room" placeholder="房间号" />
+        <button id="joinBtn">加入房间</button>
+        <h3>或加入现有房间：</h3>
         <ul id="availableRooms">
-            <!-- Existing rooms will be listed here -->
+            <!-- 现有房间列表 -->
         </ul>
     </div>
 
     <div id="game" style="display: none;">
-        <h2>Room: <span id="roomName"></span></h2>
+        <h2>房间: <span id="roomName"></span> | 玩家: <span id="playerName"></span></h2>
         <div id="users">
-            <h3>Player List:</h3>
+            <h3>玩家列表：</h3>
             <ul id="userList"></ul>
         </div>
-        <button id="startGameBtn" style="display: none;">Start Game</button>
+        <button id="startGameBtn" style="display: none;">开始游戏</button>
         <div id="gameInfo" style="display: none;">
-            <h3>Current Turn: <span id="currentPlayer"></span></h3>
+            <h3>当前轮到: <span id="currentPlayer"></span></h3>
             <div id="actions">
-                <button id="truthBtn" disabled>Truth</button>
-                <button id="dareBtn" disabled>Dare</button>
+                <button id="truthBtn" disabled>真心话</button>
+                <button id="dareBtn" disabled>大冒险</button>
             </div>
             <div id="result">
                 <h3 id="resultText"></h3>
             </div>
             <div id="actionHistory">
-                <h3>Action History:</h3>
-                <ul id="historyList"></ul>
+                <button id="toggleHistoryBtn">显示历史记录</button>
+                <div id="historyContent" style="display: none;">
+                    <h3>历史记录：</h3>
+                    <ul id="historyList"></ul>
+                </div>
             </div>
-            <div id="responseSection" style="display: none;">
-                <h3>Your Response:</h3>
-                <textarea id="textResponse" placeholder="Type your answer here..."></textarea>
-                <br/>
-                <button id="sendTextBtn">Send Text Response</button>
-                <button id="startVoiceBtn">Start Voice Response</button>
-                <button id="stopVoiceBtn" disabled>Stop Voice Response</button>
-                <h3>Responses:</h3>
+            <div id="responseSection">
+                <h3>你的回答：</h3>
+                <textarea id="textResponse" placeholder="在这里输入你的回答..." oninput="autoResize(this)"></textarea>
+                <div>
+                    <button id="sendTextBtn">发送文本回答</button>
+                    <button id="startVoiceBtn">开始语音回答</button>
+                    <button id="stopVoiceBtn" disabled>停止语音回答</button>
+                </div>
+                <h3>回答列��：</h3>
                 <ul id="responsesList"></ul>
             </div>
             <div id="approvalSection" style="display: none;">
                 <h3 id="approvalText"></h3>
-                <button id="approveBtn">Approve</button>
-                <button id="passBtn">Pass</button>
+                <div id="voteStatus" class="vote-status"></div>
+                <ul id="votersList" class="voters-list"></ul>
+                <div class="vote-buttons">
+                    <button id="approveBtn">通过</button>
+                    <button id="passBtn">不通过</button>
+                </div>
             </div>
         </div>
     </div>

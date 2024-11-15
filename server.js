@@ -18,7 +18,7 @@ let rooms = {};
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+    console.log('用户连接:', socket.id);
 
     // 创建或加入房间
     socket.on('joinRoom', ({ room, username }) => {
@@ -29,12 +29,18 @@ io.on('connection', (socket) => {
                 gameStarted: false, 
                 playerOrder: [], 
                 currentTurn: 0,
-                pendingApproval: null // 初始化审批对象
+                pendingApproval: null,
+                votingStatus: {
+                    approvedCount: 0,
+                    rejectedCount: 0,
+                    voters: {},
+                    totalRequired: 0
+                }
             };
         }
         rooms[room].users.push({ id: socket.id, username });
         io.to(room).emit('updateUsers', rooms[room].users);
-        console.log(`${username} joined room: ${room}`);
+        console.log(`${username} 加入房间: ${room}`);
 
         // 广播房间列表
         io.emit('roomList', Object.keys(rooms));
@@ -49,7 +55,7 @@ io.on('connection', (socket) => {
             roomData.playerOrder = roomData.users.sort(() => Math.random() - 0.5);
             roomData.currentTurn = 0;
             io.to(room).emit('gameStarted', { playerOrder: roomData.playerOrder, currentTurn: roomData.currentTurn });
-            console.log(`Game started in room: ${room}`);
+            console.log(`房间 ${room} 游戏开始`);
         }
     });
 
@@ -65,49 +71,100 @@ io.on('connection', (socket) => {
                 } else {
                     selected = dares[Math.floor(Math.random() * dares.length)];
                 }
-                io.to(room).emit('actionResult', { action, selected, username: currentPlayer.username });
                 
-                // 初始化审批对象
+                // 初始化投票状态
+                roomData.votingStatus = {
+                    approvedCount: 0,
+                    rejectedCount: 0,
+                    voters: {},
+                    totalRequired: Math.ceil((roomData.users.length - 1) / 2)
+                };
+                
+                // 初始化审批状态
                 roomData.pendingApproval = {
                     action,
                     selected,
-                    username: currentPlayer.username,
-                    approvals: {}
+                    username: currentPlayer.username
                 };
-
-                // 向所有其他玩家发送审批请求
-                roomData.users.forEach(user => {
-                    if (user.id !== socket.id) {
-                        roomData.pendingApproval.approvals[user.id] = false;
-                        io.to(user.id).emit('requestApproval', { 
-                            from: currentPlayer.username, 
-                            action, 
-                            selected 
-                        });
-                    }
+                
+                // 广播动作结果给所有玩家
+                io.to(room).emit('actionResult', { 
+                    action, 
+                    selected, 
+                    username: currentPlayer.username 
                 });
-
-                console.log(`${currentPlayer.username} chose ${action}: ${selected}`);
             }
         }
     });
-
+    
     // 处理玩家的批准或通过
+    // 在 server.js 中修改投票处理逻辑
     socket.on('approveAnswer', ({ room, approval }) => {
         const roomData = rooms[room];
-        if (roomData && roomData.pendingApproval) {
-            roomData.pendingApproval.approvals[socket.id] = approval;
-            // 检查是否所有玩家都已作出响应
-            const allResponded = Object.values(roomData.pendingApproval.approvals).every(resp => resp !== false);
-            if (allResponded) {
-                // 清除待审批对象
-                roomData.pendingApproval = null;
-                // 跳转到下一个玩家
-                roomData.currentTurn = (roomData.currentTurn + 1) % roomData.playerOrder.length;
-                io.to(room).emit('nextTurn', { currentTurn: roomData.currentTurn });
+        if (roomData && roomData.votingStatus) {
+            // 记录投票
+            const voter = roomData.users.find(u => u.id === socket.id);
+            if (!voter) return;
+
+            roomData.votingStatus.voters[socket.id] = {
+                vote: approval,
+                username: voter.username
+            };
+            
+            // 计算投票数
+            const votes = Object.values(roomData.votingStatus.voters);
+            const approvedCount = votes.filter(v => v.vote === true).length;
+            const rejectedCount = votes.filter(v => v.vote === false).length;
+            
+            // 计算所需票数（不包括当前回答者）
+            const totalVoters = roomData.users.length - 1;
+            const requiredVotes = Math.ceil(totalVoters / 2);
+            
+            // 广播当前投票状态
+            io.to(room).emit('voteUpdate', {
+                approvedCount,
+                rejectedCount,
+                totalVoters,
+                requiredVotes,
+                voters: roomData.votingStatus.voters
+            });
+            
+            // 检查是否所有人都已投票
+            if (approvedCount + rejectedCount === totalVoters) {
+                const passed = approvedCount >= requiredVotes;
+                
+                io.to(room).emit('voteResult', {
+                    passed,
+                    approvedCount,
+                    rejectedCount,
+                    totalVoters,
+                    requiredVotes
+                });
+                
+                if (passed) {
+                    // 通过，进入下一轮
+                    roomData.currentTurn = (roomData.currentTurn + 1) % roomData.playerOrder.length;
+                    // 重置所有状态
+                    roomData.votingStatus = {
+                        approvedCount: 0,
+                        rejectedCount: 0,
+                        voters: {},
+                        totalRequired: Math.ceil((roomData.users.length - 1) / 2)
+                    };
+                    roomData.pendingApproval = null; // 重要：重置 pendingApproval
+                    io.to(room).emit('nextTurn', { currentTurn: roomData.currentTurn });
+                }else {
+                    // 未通过，重置投票状态
+                    roomData.votingStatus = {
+                        approvedCount: 0,
+                        rejectedCount: 0,
+                        voters: {},
+                        totalRequired: requiredVotes
+                    };
+                }
             }
-        }
-    });
+            }
+        });
 
     // 处理提交答案
     socket.on('submitAnswer', ({ room, answer }) => {
@@ -124,7 +181,7 @@ io.on('connection', (socket) => {
 
     // 断开连接
     socket.on('disconnect', () => {
-        console.log('A user disconnected:', socket.id);
+        console.log('用户开连接:', socket.id);
         for (let room in rooms) {
             const roomData = rooms[room];
             roomData.users = roomData.users.filter(user => user.id !== socket.id);
@@ -152,5 +209,5 @@ io.on('connection', (socket) => {
 });
 
 http.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`服务器运行在端口 ${PORT}`);
 });
