@@ -34,6 +34,11 @@
             <div id="result">
                 <h3 id="resultText"></h3>
             </div>
+            <!-- 添加新的消息显示区域 -->
+            <div id="messageArea">
+                <h3>当前回答：</h3>
+                <div id="currentAnswer"></div>
+            </div>
             <div id="actionHistory">
                 <button id="toggleHistoryBtn">显示历史记录</button>
                 <div id="historyContent" style="display: none;">
@@ -42,14 +47,12 @@
                 </div>
             </div>
             <div id="responseSection">
-                <h3>你的回答：</h3>
                 <textarea id="textResponse" placeholder="在这里输入你的回答..." oninput="autoResize(this)"></textarea>
-                <div>
+                <div class="buttons-container">
                     <button id="sendTextBtn">发送文本回答</button>
                     <button id="startVoiceBtn">开始语音回答</button>
                     <button id="stopVoiceBtn" disabled>停止语音回答</button>
                 </div>
-                <h3>回答列��：</h3>
                 <ul id="responsesList"></ul>
             </div>
             <div id="approvalSection" style="display: none;">

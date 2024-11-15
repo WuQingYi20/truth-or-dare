@@ -229,6 +229,9 @@ passBtn.addEventListener('click', () => {
 
 // Receive new answer
 socket.on('newAnswer', ({ username, answer }) => {
+    const currentAnswer = document.getElementById('currentAnswer');
+    currentAnswer.textContent = `${username}: ${answer}`;
+    
     const li = document.createElement('li');
     li.textContent = `${username}: ${answer}`;
     responsesList.appendChild(li);
@@ -246,6 +249,9 @@ socket.on('nextTurn', ({ currentTurn: newTurn }) => {
     approvalSection.style.display = 'none';
     document.getElementById('voteStatus').textContent = '';
     document.getElementById('votersList').innerHTML = '';
+    
+    // 清除当前答案显示
+    document.getElementById('currentAnswer').textContent = '';
     
     // 重新启用真心话大冒险按钮（仅对当前玩家）
     const currentPlayer = playerOrder[currentTurn];
@@ -451,7 +457,7 @@ socket.on('approveAnswer', ({ room, approval }) => {
         const approvedCount = votes.filter(v => v.vote === true).length;
         const rejectedCount = votes.filter(v => v.vote === false).length;
         
-        // 计算所需票数（不包括当前回答者）
+        // 计算所需票数（不包括���前回答者）
         const totalVoters = roomData.users.length - 1;
         const requiredVotes = totalVoters <= 2 ? totalVoters : Math.ceil(totalVoters / 2);
         

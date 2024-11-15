@@ -9,6 +9,10 @@ body {
     padding: 0;
     overflow-x: hidden;
     margin-bottom: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 @keyframes backgroundMove {
@@ -118,8 +122,11 @@ button:disabled {
 }
 
 #gameInfo {
-    margin-top: 20px;
-    animation: fadeIn 1s ease-in-out;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 200px);
+    overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -145,10 +152,11 @@ button:disabled {
 }
 
 #actionHistory {
-    margin-bottom: 180px;
-    max-height: 300px;
+    flex: 1;
     overflow-y: auto;
+    margin-bottom: 20px;
     padding: 10px;
+    max-height: 30vh;
 }
 
 #actionHistory ul {
@@ -196,85 +204,33 @@ button:disabled {
 }
 
 #responseSection {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;
     background-color: rgba(255, 255, 255, 0.98);
-    padding: 15px;
+    padding: 10px;
     box-shadow: 0 -4px 8px rgba(0,0,0,0.1);
+    max-height: 150px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    z-index: 1000;
-    transition: opacity 0.3s ease;
-}
-
-#responseSection:focus-within {
-    opacity: 1;
-}
-
-#responseSection:not(:focus-within) {
-    opacity: 0.9;
 }
 
 #responseSection textarea {
-    width: 100%;
-    padding: 10px;
-    resize: none;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    transition: border-color 0.3s ease;
-    overflow: hidden;
+    max-height: 60px;
     min-height: 40px;
-    max-height: 100px;
-    box-sizing: border-box;
-    font-size: 1em;
 }
 
-#responseSection textarea:focus {
-    border-color: #66afe9;
-    outline: none;
-}
-
-#responseSection button {
-    margin-top: 10px;
-    padding: 8px 16px;
-    cursor: pointer;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-size: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-#responseSection button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
+#responseSection .buttons-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 5px 0;
 }
 
 #responsesList {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 10px;
-    max-height: 150px;
+    max-height: 80px;
     overflow-y: auto;
-    text-align: left;
-}
-
-#responsesList li {
-    background-color: #e0e0e0;
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 4px;
-    text-align: left;
-    transition: background-color 0.3s ease;
-}
-
-#responsesList li:hover {
-    background-color: #d5d5d5;
 }
 
 #approvalSection {
@@ -364,6 +320,28 @@ button:disabled {
     #responseSection button {
         margin: 5px;
         padding: 8px 12px;
+    }
+
+    #game {
+        height: calc(100vh - 20px);
+        margin: 10px;
+        padding: 10px;
+    }
+    
+    #actionHistory {
+        max-height: 25vh;
+    }
+    
+    #responseSection {
+        max-height: 120px;
+    }
+    
+    #responseSection textarea {
+        max-height: 40px;
+    }
+    
+    #responsesList {
+        max-height: 60px;
     }
 }
 
@@ -489,4 +467,32 @@ button:disabled {
 
 html {
     scroll-behavior: smooth;
+}
+
+#game {
+    height: calc(100vh - 40px);
+    margin: 20px auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+#messageArea {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#currentAnswer {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: white;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    text-align: left;
+    min-height: 40px;
 }
