@@ -1,130 +1,249 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     min-height: 100vh;
-    background-color: #f0f0f0;
-    background-image: linear-gradient(135deg, #f0f0f0 25%, #ffffff 25%, #ffffff 50%, #f0f0f0 50%, #f0f0f0 75%, #ffffff 75%, #ffffff 100%);
-    background-size: 56.57px 56.57px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#login {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    margin: 20px auto;
+    animation: fadeIn 0.5s ease;
+}
+
+#login h1 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 2em;
+}
+
+#login input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+#login input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+#login button, #game button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    margin: 10px 0;
+}
+
+#login button:hover, #game button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
 }
 
 #game {
-    display: grid;
-    grid-template-rows: auto auto 1fr auto;
-    height: 100vh;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 10px;
-    gap: 10px;
-    overflow: hidden;
-}
-
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 95%;
+    margin: 20px auto;
+    min-height: 80vh;
 }
 
-.players-section {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
+#game h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.player-card {
-    flex: 0 0 auto;
-    padding: 10px;
+#users {
     background: #f8f9fa;
-    border-radius: 6px;
-    min-width: 100px;
-}
-
-.game-main {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.game-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    overflow-y: auto;
-    max-height: 40vh;
-}
-
-.action-section {
-    position: sticky;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.98);
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-}
-
-@media (min-width: 768px) {
-    .game-main {
-        grid-template-columns: 2fr 1fr;
-    }
-    
-    .game-info {
-        max-height: 60vh;
-    }
-}
-
-.vote-section {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    background: white;
     padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 1000;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
-.input-section {
+#userList {
+    list-style: none;
+    padding: 0;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
-    padding: 10px;
 }
 
-.input-section textarea {
-    resize: none;
-    height: 60px;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+#userList li {
+    background: #fff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease;
 }
 
-.button-group {
+#gameInfo {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+#actions {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#actions button {
+    flex: 1;
+    min-width: 120px;
+}
+
+#truthBtn {
+    background: #e74c3c;
+}
+
+#dareBtn {
+    background: #f39c12;
+}
+
+#responseSection {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+#responseSection textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
-.button-group button {
-    flex: 1;
-    min-width: 100px;
+#approvalSection {
+    background: #dff0d8;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    animation: slideUp 0.3s ease;
+}
+
+.vote-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    #game {
+        padding: 15px;
+    }
+    
+    #actions {
+        flex-direction: column;
+    }
+    
+    .buttons-container {
+        flex-direction: column;
+    }
+    
+    .buttons-container button {
+        width: 100%;
+    }
+}
+
+#actionHistory {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+#historyList {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#historyList li {
     padding: 8px;
-    border: none;
-    border-radius: 4px;
-    background: #007bff;
-    color: white;
-    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+    animation: fadeIn 0.3s ease;
+}
+
+.vote-status {
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+}
+
+.voters-list {
+    list-style: none;
+    padding: 0;
+}
+
+.voters-list li {
+    padding: 5px 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.vote-approve {
+    background: #dff0d8;
+    color: #3c763d;
+}
+
+.vote-reject {
+    background: #f2dede;
+    color: #a94442;
 }
